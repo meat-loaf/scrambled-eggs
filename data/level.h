@@ -1,29 +1,10 @@
 #ifndef _LEVEL_H_
 #define _LEVEL_H_
 
+#include "level_consts.h"
+
 #include <cstdint>
 #include <vector>
-
-//TODO accessing by fields is currently yields incorrect values
-//typedef
-//struct header_items {
-//	uint16_t bg_color:5;
-//	uint16_t bg1_tileset:4;
-//	uint16_t bg1_palette:5;
-//	uint16_t bg2_tileset:5;
-//	uint16_t bg2_palette:6;
-//	uint16_t bg3_tileset:6;
-//	uint16_t bg3_palette:6;
-//	uint16_t sprite_tileset:7;
-//	uint16_t sprite_palette:4;
-//	uint16_t level_mode:5;
-//	uint16_t anim_tileset:6;
-//	uint16_t anim_tileset_palette:5;
-//	uint16_t bg_scroll_rate:5;
-//	uint16_t music:4;
-//	uint16_t item_memory:2;
-//	uint16_t unused:5;
-//} __attribute__((packed)) level_header;
 
 #define HEADER_BG_COLOR(header_arr)		\
 	(((header_arr)[0] & 0xF1) >> 0x3)
@@ -34,7 +15,6 @@
 	(((header_arr)[1] & 0x80) >> 0x7)	\
 	)
 	
-
 
 typedef
 struct _five_byte_obj
@@ -147,16 +127,36 @@ struct _sprite
 	uint8_t x_coord;
 } sprite;
 
+/* 10 byte header looks like this:
+typedef
+struct header_items {
+	uint16_t bg_color:5;
+	uint16_t bg1_tileset:4;
+	uint16_t bg1_palette:5;
+	uint16_t bg2_tileset:5;
+	uint16_t bg2_palette:6;
+	uint16_t bg3_tileset:6;
+	uint16_t bg3_palette:6;
+	uint16_t sprite_tileset:7;
+	uint16_t sprite_palette:4;
+	uint16_t level_mode:5;
+	uint16_t anim_tileset:6;
+	uint16_t anim_tileset_palette:5;
+	uint16_t bg_scroll_rate:5;
+	uint16_t music:4;
+	uint16_t item_memory:2;
+	uint16_t unused:5;
+} level_header;
+*/
 
 typedef
 struct _level {
-	//level_header header;
-	uint8_t header[10];
+	uint8_t header[LEVEL_HEADER_SIZE_BYTES];
 	std::vector<typed_object> objects;
 	std::vector<level_exit> exits;
 	std::vector<sprite> sprites;
 } level;
 
-bool load_level_data(const char * const rom_data, uint16_t level_num, level& level_data);
+bool load_level_data(const char* const rom_data, const uint16_t level_num, level& level_data);
 
 #endif

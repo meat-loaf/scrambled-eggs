@@ -1,41 +1,26 @@
 #include "level.h"
 #include "../util/sfx_to_pc.h"
 
-#include <iostream>
 #include <array>
 
-//TODO split into (static) sub functions for better readability
-bool
-load_level_data(const char * const rom_data, uint16_t level_num, level& level_data)
+static bool headered = true;
+
+static bool
+load_level_header(const char* const rom_data, uint32_t& obj_ptr, level& level_data)
 {
-	bool headered = true;
-	//the level data listing consits of two 24 bit pointers:
-	//one for header/obj/screen exit data, one for sprite data.
-	uint32_t level_data_pointer = sfx_to_pc(0x17F7C3) + (headered == true ? 512 : 0) + level_num * 6;
-	//the 65C816 is a little endian processor so they're stored
-	//in little endian format.
-	uint32_t obj_ptr = sfx_to_pc(
-		((static_cast<unsigned char>(rom_data[level_data_pointer+2]) << 16) |
-		(static_cast<unsigned char>(rom_data[level_data_pointer+1]) <<  8)  |
-		(static_cast<unsigned char>(rom_data[level_data_pointer+0]) <<  0)) &
-		0x00FFFFFF);// + (headered == true) ? 512 : 0;
-	uint32_t spr_ptr = sfx_to_pc(
-		((static_cast<unsigned char>(rom_data[level_data_pointer+5]) << 16) |
-		(static_cast<unsigned char>(rom_data[level_data_pointer+4]) <<  8)  |
-		(static_cast<unsigned char>(rom_data[level_data_pointer+3]) <<  0)) &
-		0x00FFFFFF);// + (headered == true) ? 512 : 0;
-
-	obj_ptr += (headered == true) ? 512 : 0;
-	spr_ptr += (headered == true) ? 512 : 0;
-
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < LEVEL_HEADER_SIZE_BYTES; i++)
 	{
-		//level_data.header.header_comb[i] = rom_data[obj_ptr+i];
 		level_data.header[i] = rom_data[obj_ptr+i];
 	}
 	obj_ptr += 10;
+	return true;
+}
+
+static bool
+load_level_object_data(const char* const rom_data, uint32_t& obj_ptr, level& level_data)
+{
 	//TODO bounds check
-	uint32_t obj_table_addr = sfx_to_pc(0x1284EC) + (headered == true ? 512 : 0);
+	uint32_t obj_table_addr = sfx_to_pc(OBJECT_TABLE_PTR_SNES) + (headered == true ? 512 : 0);
 	while(static_cast<uint8_t>(rom_data[obj_ptr]) != 0xFF)
 	{
 		uint8_t id = rom_data[obj_ptr];
@@ -93,8 +78,13 @@ load_level_data(const char * const rom_data, uint16_t level_num, level& level_da
 	}
 	//advance past the 'end of object list' marker
 	obj_ptr++;
+	return true;
+}
+
+static bool
+load_level_screen_exit_data(const char* const rom_data, uint32_t& obj_ptr, level& level_data)
+{
 	//TODO bounds check
-	//process screen exits
 	while(static_cast<uint8_t>(rom_data[obj_ptr]) != 0xFF)
 	{
 		uint8_t dest = (uint8_t)rom_data[obj_ptr+1];
@@ -134,9 +124,13 @@ load_level_data(const char * const rom_data, uint16_t level_num, level& level_da
 		obj_ptr += 5;
 		
 	}
+	return true;
+}
 
+static bool
+load_level_sprites(const char* const rom_data, uint32_t& spr_ptr, level& level_data)
+{
 	//TODO bounds check
-	//process sprites
 	while(((uint8_t)rom_data[spr_ptr]) != 0xFF && ((uint8_t)rom_data[spr_ptr+1]) != 0xFF)
 	{
 		level_data.sprites.push_back({
@@ -146,5 +140,45 @@ load_level_data(const char * const rom_data, uint16_t level_num, level& level_da
 		});
 		spr_ptr += 3;
 	}
+	return true;
+}
+
+static bool
+get_level_obj_spr_ptrs(const char* const rom_data, const uint16_t level_num, uint32_t& obj_ptr, uint32_t& spr_ptr)
+{
+	//the level data listing consits of two 24 bit pointers:
+	//one for header/obj/screen exit data, one for sprite data.
+	uint32_t level_data_pointer = sfx_to_pc(LEVEL_DATA_PTR_SNES) + (headered == true ? 512 : 0) + level_num * 6;
+	//the 65C816 is a little endian processor so they're stored
+	//in little endian format.
+	obj_ptr = sfx_to_pc(
+		((static_cast<unsigned char>(rom_data[level_data_pointer+2]) << 16) |
+		(static_cast<unsigned char>(rom_data[level_data_pointer+1]) <<  8)  |
+		(static_cast<unsigned char>(rom_data[level_data_pointer+0]) <<  0)) &
+		0x00FFFFFF);
+	spr_ptr = sfx_to_pc(
+		((static_cast<unsigned char>(rom_data[level_data_pointer+5]) << 16) |
+		(static_cast<unsigned char>(rom_data[level_data_pointer+4]) <<  8)  |
+		(static_cast<unsigned char>(rom_data[level_data_pointer+3]) <<  0)) &
+		0x00FFFFFF);
+
+	obj_ptr += (headered == true) ? 512 : 0;
+	spr_ptr += (headered == true) ? 512 : 0;
+	return true;
+}
+
+bool
+load_level_data(const char* const rom_data, const uint16_t level_num, level& level_data)
+{
+	uint32_t obj_ptr, spr_ptr;
+	get_level_obj_spr_ptrs(rom_data, level_num, obj_ptr, spr_ptr);
+
+	// obj_ptr is changed along the way, so these must be called in this order
+	load_level_header(rom_data, obj_ptr, level_data);
+	load_level_object_data(rom_data, obj_ptr, level_data);
+	load_level_screen_exit_data(rom_data, obj_ptr, level_data);
+
+	load_level_sprites(rom_data, spr_ptr, level_data);
+
 	return true;
 }
