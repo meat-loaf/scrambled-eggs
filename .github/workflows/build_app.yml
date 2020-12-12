@@ -16,5 +16,5 @@ jobs:
         uses: jurplel/install-qt-action@v2
 
       - run: ls
-      - run: build.sh
+      - run: bash build.sh
       - run: ls
