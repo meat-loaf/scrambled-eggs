@@ -1,0 +1,16 @@
+name: Build-App
+
+on: push
+
+jobs:
+  build-app:
+    name: Perform basic build of the app
+    runs-on: vookimedlo/ubuntu-qt:latestDistroOfficial_clang_focal
+
+    steps:
+      # Checks out a copy of your repository on the machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - run: build.sh
+      - run: ls
