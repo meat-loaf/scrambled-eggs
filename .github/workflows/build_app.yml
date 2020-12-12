@@ -12,6 +12,9 @@ jobs:
       - name: Checkout repository to this container
         uses: actions/checkout@v2
 
+      - name: Install MSVS Compiler
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
 
