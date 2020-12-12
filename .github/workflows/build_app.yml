@@ -3,6 +3,22 @@ name: Build-App
 on: push
 
 jobs:
+  build-app-windows:
+    name: Build for windows platform
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Checkout repository to this container
+        uses: actions/checkout@v2
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+
+      - name: Build scambled-eggs
+        shell: bash
+        run: bash build.sh
+
   build-app-macos:
     name: Build for macOS platform
     runs-on: macOS-latest
