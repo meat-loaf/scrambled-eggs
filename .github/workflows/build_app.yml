@@ -16,5 +16,7 @@ jobs:
         uses: jurplel/install-qt-action@v2
 
       - run: ls
+      - run: apt update
+      - run: apt install build-essential
       - run: bash build.sh
       - run: ls
