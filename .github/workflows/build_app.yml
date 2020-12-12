@@ -1,0 +1,25 @@
+name: Build-App
+
+on: push
+
+jobs:
+  build-app:
+    name: Perform basic build of the app
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository to this container
+        uses: actions/checkout@v2
+
+
+      - name: Install build tools
+        run: sudo apt-get update
+              && sudo apt-get install build-essential
+              && sudo apt-get install gcc-9 g++-9
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+
+      - name: Build scambled-eggs
+        run: bash build.sh
