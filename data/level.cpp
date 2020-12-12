@@ -28,7 +28,7 @@ load_level_object_data(const char* const rom_data, uint32_t& obj_ptr, level& lev
 		//their actual id is the 4th byte of the object.
 		if (id == 0){
 			id = rom_data[obj_ptr+3];
-			level_data.objects.push_back({
+			level_data.objects.push_back(typed_object {
 				.type = object_type::four_byte_ext,
 				.object = {.four_byte_ext = {
 					.ext_marker = id,
@@ -47,7 +47,7 @@ load_level_object_data(const char* const rom_data, uint32_t& obj_ptr, level& lev
 		//four byte
 		case 0:
 		case 1:
-			level_data.objects.push_back({
+			level_data.objects.push_back(typed_object {
 				.type = object_type::four_byte_std,
 				.object = { .four_byte_std = {
 						.id = id,
@@ -61,7 +61,7 @@ load_level_object_data(const char* const rom_data, uint32_t& obj_ptr, level& lev
 		continue;
 		//five byte
 		default:
-			level_data.objects.push_back({
+			level_data.objects.push_back(typed_object {
 				.type = object_type::five_byte,
 				.object = { .five_byte = {
 						.id = id,
@@ -92,7 +92,7 @@ load_level_screen_exit_data(const char* const rom_data, uint32_t& obj_ptr, level
 		{
 		//normal exit
 		case 0:
-			level_data.exits.push_back({
+			level_data.exits.push_back(level_exit {
 				.type = exit_type::screen_exit,
 				.exit = { .sexit = {
 						.target_page = (uint8_t)rom_data[obj_ptr],
@@ -107,7 +107,7 @@ load_level_screen_exit_data(const char* const rom_data, uint32_t& obj_ptr, level
 		break;
 		//minibattle
 		case 1:
-			level_data.exits.push_back({
+			level_data.exits.push_back(level_exit {
 				.type = exit_type::minibattle,
 				.exit = { .mexit = {
 						.target_page = (uint8_t)rom_data[obj_ptr],
@@ -133,7 +133,7 @@ load_level_sprites(const char* const rom_data, uint32_t& spr_ptr, level& level_d
 	//TODO bounds check
 	while(((uint8_t)rom_data[spr_ptr]) != 0xFF && ((uint8_t)rom_data[spr_ptr+1]) != 0xFF)
 	{
-		level_data.sprites.push_back({
+		level_data.sprites.push_back(sprite {
 			.id = (uint8_t)rom_data[spr_ptr],
 			.y_coord_id_hi = (uint8_t)rom_data[spr_ptr+1],
 			.x_coord = (uint8_t)rom_data[spr_ptr+2]
