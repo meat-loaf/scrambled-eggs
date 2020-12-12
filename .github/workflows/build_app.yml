@@ -8,17 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks out a copy of your repository on the machine
-      - name: Checkout code
+
+      - name: Checkout repository to this container
         uses: actions/checkout@v2
 
-      - run: sudo apt-get update
-      - run: sudo apt-get install build-essential
-      - run: sudo apt-get install gcc-9 g++-9
+
+      - name: Install build tools
+        run: sudo apt-get update \
+              && apt-get install build-essential \
+              && install gcc-9 g++-9
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
 
-      - run: ls
-
-      - run: bash build.sh
-      - run: ls
+      - name: Build scambled-eggs
+        run: bash build.sh
