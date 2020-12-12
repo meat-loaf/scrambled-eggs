@@ -11,7 +11,7 @@
 #include <QRegExp>
 
 editor_t::editor_t(QWidget* parent)
-		: QMainWindow(parent)
+	: QMainWindow(parent)
 {
 	m_view = new level_view_t(this);
 
@@ -69,9 +69,9 @@ editor_t::open_level()
 	bool ok_clicked = false;
 
 	QString input_str_q =
-			QInputDialog::getText(this,
-								  "Open Level Number (in hex)", "Level number (0 - D8)",
-								  QLineEdit::Normal, "", &ok_clicked);
+		QInputDialog::getText(this,
+			"Open Level Number (in hex)", "Level number (0 - D8)",
+			QLineEdit::Normal, "", &ok_clicked);
 
 	if (ok_clicked)
 	{
