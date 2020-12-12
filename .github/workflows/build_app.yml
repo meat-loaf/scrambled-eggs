@@ -15,5 +15,6 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
 
+      - run: ls
       - run: build.sh
       - run: ls
