@@ -12,8 +12,9 @@ jobs:
       - name: Checkout repository to this container
         uses: actions/checkout@v2
 
-      - name: Install MSVS Compiler
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install LLVM Compiler
+      - run: curl -fsSL -o LLVM9.exe https://releases.llvm.org/9.0.0/LLVM-9.0.0-win64.exe
+              && 7z x LLVM9.exe -y -o"C:/Program Files/LLVM"
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
