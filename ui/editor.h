@@ -1,29 +1,40 @@
-#ifndef _EDITOR_T_H_
-#define _EDITOR_T_H_
+#ifndef _EDITOR_H_
+#define _EDITOR_H_
+
+#include "level_view.h"
+#include "../data/level.h"
+#include "../data/yi_rom.h"
 
 #include <functional>
 
 #include <QMainWindow>
-
-#include "level_view.h"
-#include "../data/level.h"
+#include <QAction>
+#include <QInputDialog>
+#include <QDialog>
+#include <QErrorMessage>
 
 class editor_t : public QMainWindow {
 	Q_OBJECT
 
 public:
-	explicit editor_t(
-	std::function<void (std::string)> open_callback,
-		QWidget* parent = 0);
-	void draw_level(level& level_data);
+	explicit editor_t(QWidget* parent = 0);
+	virtual ~editor_t();
 
-	level_view_t* view;
 signals:
 public slots:
 	void open();
+	void open_level();
 private:
-	std::function<void (std::string)> ext_op_cb;
 	void initialize();
+	void populate_menu();
+	void draw_level(level& level_data);
+
+	yi_rom_t* m_rom;
+	level_view_t* m_view;
+
+	QAction* open_lvl_action;
+	QErrorMessage* m_error_message_diag;
+
 };
 
 #endif

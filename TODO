@@ -1,0 +1,19 @@
+Short-term todos:
+
+* Figure out what to do with error message boxes
+* Input validation on level number -- do it properly.
+* Drawing appears to be a little wrong in some places -- check that we're drawing
+	things with negative length (?) properly (see level A0, for example -- pipes drawn wrong)
+* Finish level_object class so it's actually useful. Link it to level data and ensure
+	it can only be moved by the user 8 pixels at a time
+* Implement zoom (should be reasonably simple, QT should support this easily)
+* Allow modifying level header (much simpler, is done in-place)
+
+Longer term:
+* Allow saving of modified levels so this isn't just a glorified level viewer.
+	this involves finding a space in the ROM to put it if the level is bigger, potentially
+	modifying the sprite/level tables, etc.
+* ROM freespace tracker of some sort -- it would be nice for the user to easliy know how much
+	space is left for individual levels, since we're stuck with the 2MB limit it seems.
+
+more to come...

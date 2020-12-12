@@ -3,3 +3,6 @@ Scrambled Eggs is a Level Editor for Yoshi's Island.
 It requires QT5 to build. Simply run the build.sh script and it will
 generate the makefile for you, then run `make'. Arguments to build.sh
 are passed to make.
+
+Currently, it only displays a (rough) grid of what the level objects look like,
+and it currently doesn't display sprites. There is a lot of work to be done, still.
