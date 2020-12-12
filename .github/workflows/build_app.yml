@@ -3,26 +3,7 @@ name: Build-App
 on: push
 
 jobs:
-  build-app-windows:
-    name: Build for windows platform
-    runs-on: windows-latest
-
-    steps:
-
-      - name: Checkout repository to this container
-        uses: actions/checkout@v2
-
-      - name: Install LLVM Compiler
-        run: curl -fsSL -o LLVM9.exe https://releases.llvm.org/9.0.0/LLVM-9.0.0-win64.exe
-              && 7z x LLVM9.exe -y -o"C:/Program Files/LLVM"
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
-
-      - name: Build scambled-eggs
-        shell: bash
-        run: bash build.sh
-
+  
   build-app-macos:
     name: Build for macOS platform
     runs-on: macOS-latest
