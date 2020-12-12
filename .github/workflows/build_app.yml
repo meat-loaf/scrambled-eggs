@@ -12,11 +12,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - run: sudo apt-get update
+      - run: sudo apt-get install build-essential
+      - run: sudo apt-get install gcc-9 g++-9
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
 
       - run: ls
-      - run: sudo apt-get update
-      - run: sudo apt-get install build-essential
+
       - run: bash build.sh
       - run: ls
