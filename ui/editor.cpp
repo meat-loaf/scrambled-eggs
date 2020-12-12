@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMainWindow>
+#include <QRegExp>
 
 editor_t::editor_t(QWidget* parent)
 	: QMainWindow(parent)
@@ -63,32 +64,32 @@ editor_t::open()
 void
 editor_t::open_level()
 {
-	bool ok = false;
-	//TODO limit number of input characters to a sane amount, if possible
-	std::string value =
+	QRegExp rx("^[0-9a-fA-F]{1,2}$");
+
+	bool ok_clicked = false;
+
+	QString input_str_q =
 		QInputDialog::getText(this,
 			"Open Level Number (in hex)", "Level number (0 - D8)",
-			QLineEdit::Normal, "", &ok).toStdString();
-	
-	if (ok)
+			QLineEdit::Normal, "", &ok_clicked);
+
+	if (ok_clicked)
 	{
-		std::cout << value << std::endl;
-		//TODO better way to do this (use QValidator)?
-		for (auto i : value)
-		{
-			if (i >= '0' || i <= '9')
-				continue;
-			if (i >= 'A' || i <= 'F')
-				continue;
-			if (i >= 'a' || i <= 'f')
-			{
-				m_error_message_diag->showMessage("Bad level number.");
-				return;
-			}
+
+		if (!rx.exactMatch(input_str_q)
+			or input_str_q.toUpper() > "D8") {
+
+			m_error_message_diag->showMessage("Bad level number.");
+			return;
+
 		}
+
+		std::string input_str = input_str_q.toStdString();
+
+		std::cout << input_str << std::endl;
 		std::stringstream ss;
 		uint16_t x;
-		ss << std::hex << value;
+		ss << std::hex << input_str;
 		ss >> x;
 		level data;
 		load_level_data(m_rom->rom_data(), x, data);

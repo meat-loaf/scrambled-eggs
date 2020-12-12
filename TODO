@@ -1,7 +1,6 @@
 Short-term todos:
 
 * Figure out what to do with error message boxes
-* Input validation on level number -- do it properly.
 * Drawing appears to be a little wrong in some places -- check that we're drawing
 	things with negative length (?) properly (see level A0, for example -- pipes drawn wrong)
 * Finish level_object class so it's actually useful. Link it to level data and ensure
