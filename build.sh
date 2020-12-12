@@ -1,5 +1,6 @@
 if [ ! -f ./Makefile -o ./Makefile -nt se.pro ]; then
-	qmake se.pro -o Makefile
+  mkdir build
+	cd build && qmake ../se.pro -o Makefile
 fi
 
 make $@
