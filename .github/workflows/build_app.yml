@@ -3,7 +3,7 @@ name: Build-App
 on: push
 
 jobs:
-  
+
   build-app-macos:
     name: Build for macOS platform
     runs-on: macOS-latest
